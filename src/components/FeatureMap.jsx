@@ -35,22 +35,13 @@ const FeatureMap = forwardRef(({
     onNodeSelect(node)
   }, [onNodeSelect])
 
-  // Sync with parent component - use refs to prevent unnecessary re-renders
-  const prevNodesRef = React.useRef(initialNodes)
-  const prevEdgesRef = React.useRef(initialEdges)
-
+  // Sync with parent component
   React.useEffect(() => {
-    if (JSON.stringify(prevNodesRef.current) !== JSON.stringify(initialNodes)) {
-      setNodes(initialNodes)
-      prevNodesRef.current = initialNodes
-    }
+    setNodes(initialNodes)
   }, [initialNodes, setNodes])
 
   React.useEffect(() => {
-    if (JSON.stringify(prevEdgesRef.current) !== JSON.stringify(initialEdges)) {
-      setEdges(initialEdges)
-      prevEdgesRef.current = initialEdges
-    }
+    setEdges(initialEdges)
   }, [initialEdges, setEdges])
 
   React.useEffect(() => {
@@ -77,7 +68,6 @@ const FeatureMap = forwardRef(({
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <ReactFlow
-        key={`${nodes.length}-${edges.length}`}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

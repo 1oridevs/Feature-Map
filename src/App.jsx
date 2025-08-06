@@ -45,12 +45,21 @@ function App() {
         type: nodeType
       }
     }
+    
+    // Clear any existing selection to prevent UI jumping
+    setSelectedNode(null)
     setNodes(prevNodes => [...prevNodes, newNode])
     showNotification('success', `${nodeType} node added successfully!`)
   }
 
   const handleNodeSelect = (node) => {
-    setSelectedNode(node)
+    // Only update if the selected node is different
+    setSelectedNode(prevNode => {
+      if (prevNode?.id !== node?.id) {
+        return node
+      }
+      return prevNode
+    })
   }
 
   const handleNodeUpdate = (nodeId, updates, duplicatedNode = null) => {
@@ -60,9 +69,12 @@ function App() {
       return
     }
     
-    setNodes(prevNodes => prevNodes.map(node => 
-      node.id === nodeId ? { ...node, data: { ...node.data, ...updates } } : node
-    ))
+    // Only update if there are actual changes
+    if (updates && Object.keys(updates).length > 0) {
+      setNodes(prevNodes => prevNodes.map(node => 
+        node.id === nodeId ? { ...node, data: { ...node.data, ...updates } } : node
+      ))
+    }
   }
 
   const handleExport = () => {
@@ -103,10 +115,13 @@ function App() {
   const handleDeleteNode = (nodeId = null) => {
     const nodeToDelete = nodeId || (selectedNode ? selectedNode.id : null)
     if (nodeToDelete) {
+      // Clear selection first to prevent UI jumping
+      setSelectedNode(null)
+      
       // Use functional updates to ensure state consistency
       setNodes(prevNodes => prevNodes.filter(node => node.id !== nodeToDelete))
       setEdges(prevEdges => prevEdges.filter(edge => edge.source !== nodeToDelete && edge.target !== nodeToDelete))
-      setSelectedNode(null)
+      
       showNotification('success', 'Node deleted successfully!')
     }
   }
@@ -117,7 +132,10 @@ function App() {
   }
 
   const showNotification = (type, message, title = '') => {
-    setNotification({ isVisible: true, type, title, message })
+    // Small delay to prevent notification from interfering with UI updates
+    setTimeout(() => {
+      setNotification({ isVisible: true, type, title, message })
+    }, 100)
   }
 
   const hideNotification = () => {

@@ -17,7 +17,10 @@ const Sidebar = ({ selectedNode, onNodeUpdate, onDeleteNode }) => {
   }
 
            const handleChange = (field, value) => {
-           onNodeUpdate(selectedNode.id, { [field]: value })
+           // Only update if the value has actually changed
+           if (selectedNode.data[field] !== value) {
+             onNodeUpdate(selectedNode.id, { [field]: value })
+           }
          }
 
          const handleDelete = () => {
