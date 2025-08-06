@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, forwardRef, useImperativeHandle } from 'react'
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -14,7 +14,15 @@ const nodeTypes = {
   custom: CustomNode,
 }
 
-const FeatureMap = ({ nodes: initialNodes, edges: initialEdges, onNodesChange: onNodesChangeProp, onEdgesChange: onEdgesChangeProp, onNodeSelect }) => {
+const FeatureMap = forwardRef(({ 
+  nodes: initialNodes, 
+  edges: initialEdges, 
+  onNodesChange: onNodesChangeProp, 
+  onEdgesChange: onEdgesChangeProp, 
+  onNodeSelect,
+  showMinimap = true,
+  showGrid = true
+}, ref) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
@@ -44,6 +52,19 @@ const FeatureMap = ({ nodes: initialNodes, edges: initialEdges, onNodesChange: o
     onEdgesChangeProp(edges)
   }, [edges, onEdgesChangeProp])
 
+  // Expose ReactFlow methods to parent component
+  useImperativeHandle(ref, () => ({
+    zoomIn: () => {
+      // This would need to be implemented with ReactFlow's zoom API
+    },
+    zoomOut: () => {
+      // This would need to be implemented with ReactFlow's zoom API
+    },
+    fitView: () => {
+      // This would need to be implemented with ReactFlow's fitView API
+    }
+  }))
+
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <ReactFlow
@@ -58,19 +79,21 @@ const FeatureMap = ({ nodes: initialNodes, edges: initialEdges, onNodesChange: o
         attributionPosition="bottom-left"
       >
         <Controls />
-        <MiniMap
-          nodeStrokeColor={(n) => {
-            if (n.type === 'input') return '#0041d0'
-            if (n.type === 'output') return '#ff0072'
-            return '#1a192b'
-          }}
-          nodeColor={(n) => {
-            if (n.type === 'input') return '#0041d0'
-            if (n.type === 'output') return '#ff0072'
-            return '#fff'
-          }}
-        />
-        <Background variant="dots" gap={12} size={1} />
+                       {showMinimap && (
+                 <MiniMap
+                   nodeStrokeColor={(n) => {
+                     if (n.type === 'input') return '#0041d0'
+                     if (n.type === 'output') return '#ff0072'
+                     return '#1a192b'
+                   }}
+                   nodeColor={(n) => {
+                     if (n.type === 'input') return '#0041d0'
+                     if (n.type === 'output') return '#ff0072'
+                     return '#fff'
+                   }}
+                 />
+               )}
+               {showGrid && <Background variant="dots" gap={12} size={1} />}
       </ReactFlow>
     </div>
   )

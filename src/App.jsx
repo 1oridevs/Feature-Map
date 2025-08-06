@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Map, Plus, Download, Upload, Settings, Layers, FileText, HelpCircle } from 'lucide-react'
 import FeatureMap from './components/FeatureMap'
 import Sidebar from './components/Sidebar'
@@ -10,6 +10,9 @@ import KeyboardShortcuts from './components/KeyboardShortcuts'
 import HelpModal from './components/HelpModal'
 import Notification from './components/Notification'
 import LoadingSpinner from './components/LoadingSpinner'
+import ViewControls from './components/ViewControls'
+import StatusBar from './components/StatusBar'
+import QuickActions from './components/QuickActions'
 
 function App() {
   const [nodes, setNodes] = useState([])
@@ -20,6 +23,9 @@ function App() {
   const [showTemplates, setShowTemplates] = useState(false)
   const [notification, setNotification] = useState({ isVisible: false, type: 'info', title: '', message: '' })
   const [isLoading, setIsLoading] = useState(false)
+  const [showMinimap, setShowMinimap] = useState(true)
+  const [showGrid, setShowGrid] = useState(true)
+  const reactFlowRef = useRef(null)
 
   const handleAddNode = (nodeType) => {
     const newNode = {
@@ -41,7 +47,12 @@ function App() {
     setSelectedNode(node)
   }
 
-  const handleNodeUpdate = (nodeId, updates) => {
+  const handleNodeUpdate = (nodeId, updates, duplicatedNode = null) => {
+    if (duplicatedNode) {
+      setNodes([...nodes, duplicatedNode])
+      return
+    }
+    
     setNodes(nodes.map(node => 
       node.id === nodeId ? { ...node, data: { ...node.data, ...updates } } : node
     ))
@@ -102,6 +113,60 @@ function App() {
     setNotification({ isVisible: false, type: 'info', title: '', message: '' })
   }
 
+  const handleSelectAll = () => {
+    // This would require ReactFlow's selection API
+    showNotification('info', 'Select all functionality coming soon!')
+  }
+
+  const handleClearAll = () => {
+    if (window.confirm('Are you sure you want to clear all nodes and connections?')) {
+      setNodes([])
+      setEdges([])
+      setSelectedNode(null)
+      showNotification('success', 'All nodes cleared successfully!')
+    }
+  }
+
+  const handleAutoLayout = () => {
+    // Simple auto-layout algorithm
+    const newNodes = nodes.map((node, index) => ({
+      ...node,
+      position: {
+        x: (index % 3) * 300 + 100,
+        y: Math.floor(index / 3) * 200 + 100
+      }
+    }))
+    setNodes(newNodes)
+    showNotification('success', 'Nodes auto-arranged!')
+  }
+
+  const handleShuffleLayout = () => {
+    const newNodes = nodes.map(node => ({
+      ...node,
+      position: {
+        x: Math.random() * 800 + 100,
+        y: Math.random() * 600 + 100
+      }
+    }))
+    setNodes(newNodes)
+    showNotification('success', 'Node positions randomized!')
+  }
+
+  const handleCopySelected = () => {
+    if (selectedNode) {
+      navigator.clipboard.writeText(JSON.stringify(selectedNode, null, 2))
+      showNotification('success', 'Node copied to clipboard!')
+    }
+  }
+
+  const handleCutSelected = () => {
+    if (selectedNode) {
+      navigator.clipboard.writeText(JSON.stringify(selectedNode, null, 2))
+      handleDeleteNode()
+      showNotification('success', 'Node cut to clipboard!')
+    }
+  }
+
   return (
     <div className="h-screen bg-secondary-50 flex flex-col">
       {/* Header */}
@@ -159,6 +224,7 @@ function App() {
         <Sidebar 
           selectedNode={selectedNode}
           onNodeUpdate={handleNodeUpdate}
+          onDeleteNode={handleDeleteNode}
         />
         
         {/* Main Canvas */}
@@ -169,17 +235,47 @@ function App() {
             <Templates onLoadTemplate={handleLoadTemplate} />
           )}
           
+          <QuickActions
+            onSelectAll={handleSelectAll}
+            onClearAll={handleClearAll}
+            onAutoLayout={handleAutoLayout}
+            onShuffleLayout={handleShuffleLayout}
+            onCopySelected={handleCopySelected}
+            onCutSelected={handleCutSelected}
+            hasSelectedNode={!!selectedNode}
+          />
+          
           <SearchFilter nodes={nodes} onFilterChange={setFilteredNodes} />
           
-          <div className="flex-1 bg-white min-h-0">
+          <div className="flex-1 bg-white min-h-0 relative">
             <FeatureMap
+              ref={reactFlowRef}
               nodes={filteredNodes.length > 0 ? filteredNodes : nodes}
               edges={edges}
               onNodesChange={setNodes}
               onEdgesChange={setEdges}
               onNodeSelect={handleNodeSelect}
+              showMinimap={showMinimap}
+              showGrid={showGrid}
+            />
+            
+            <ViewControls
+              showMinimap={showMinimap}
+              onToggleMinimap={() => setShowMinimap(!showMinimap)}
+              showGrid={showGrid}
+              onToggleGrid={() => setShowGrid(!showGrid)}
+              onZoomIn={() => reactFlowRef.current?.zoomIn()}
+              onZoomOut={() => reactFlowRef.current?.zoomOut()}
+              onFitView={() => reactFlowRef.current?.fitView()}
             />
           </div>
+          
+          <StatusBar
+            nodes={nodes}
+            edges={edges}
+            selectedNode={selectedNode}
+            filteredNodes={filteredNodes}
+          />
         </div>
       </div>
 

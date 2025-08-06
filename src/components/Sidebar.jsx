@@ -1,7 +1,7 @@
 import React from 'react'
-import { Edit3, User, Calendar, Tag } from 'lucide-react'
+import { Edit3, User, Calendar, Tag, Trash2, Copy, ExternalLink } from 'lucide-react'
 
-const Sidebar = ({ selectedNode, onNodeUpdate }) => {
+const Sidebar = ({ selectedNode, onNodeUpdate, onDeleteNode }) => {
   if (!selectedNode) {
     return (
       <div className="w-80 bg-white border-r border-secondary-200 p-6">
@@ -16,16 +16,56 @@ const Sidebar = ({ selectedNode, onNodeUpdate }) => {
     )
   }
 
-  const handleChange = (field, value) => {
-    onNodeUpdate(selectedNode.id, { [field]: value })
-  }
+           const handleChange = (field, value) => {
+           onNodeUpdate(selectedNode.id, { [field]: value })
+         }
+
+         const handleDelete = () => {
+           if (window.confirm('Are you sure you want to delete this node?')) {
+             onDeleteNode(selectedNode.id)
+           }
+         }
+
+         const handleDuplicate = () => {
+           const duplicatedNode = {
+             ...selectedNode,
+             id: `${selectedNode.data.type}-${Date.now()}`,
+             position: {
+               x: selectedNode.position.x + 50,
+               y: selectedNode.position.y + 50
+             },
+             data: {
+               ...selectedNode.data,
+               label: `${selectedNode.data.label} (Copy)`
+             }
+           }
+           onNodeUpdate(null, null, duplicatedNode)
+         }
 
   return (
-    <div className="w-80 bg-white border-r border-secondary-200 p-6 overflow-y-auto">
+    <div className="w-80 bg-white border-r border-secondary-200 p-6 overflow-y-auto custom-scrollbar">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-secondary-900 mb-4">
-          Node Properties
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-secondary-900">
+            Node Properties
+          </h3>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleDuplicate}
+              className="p-2 text-secondary-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+              title="Duplicate node"
+            >
+              <Copy className="h-4 w-4" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-2 text-secondary-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              title="Delete node"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
         
         <div className="space-y-4">
           {/* Label */}
