@@ -1,0 +1,1 @@
+🗺️ Feature Map - Interactive feature mapping tool for visualizing app architecture, features, bugs, and systems. Create beautiful flowcharts with drag & drop, export as PNG/SVG, and collaborate with templates. 
