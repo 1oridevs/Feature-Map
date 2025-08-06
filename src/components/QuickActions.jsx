@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select, Trash2, Layout, Shuffle, Copy, Scissors } from 'lucide-react'
+import { CheckSquare, Trash2, Layout, Shuffle, Copy, Scissors } from 'lucide-react'
 
 const QuickActions = ({ 
   onSelectAll, 
@@ -20,7 +20,7 @@ const QuickActions = ({
           className="flex items-center space-x-1 px-3 py-1.5 text-sm text-secondary-600 hover:text-secondary-900 hover:bg-secondary-100 rounded-md transition-colors"
           title="Select all nodes"
         >
-          <Select className="h-4 w-4" />
+          <CheckSquare className="h-4 w-4" />
           <span>Select All</span>
         </button>
         
