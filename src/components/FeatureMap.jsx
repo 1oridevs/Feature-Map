@@ -97,6 +97,6 @@ const FeatureMap = forwardRef(({
       </ReactFlow>
     </div>
   )
-}
+})
 
 export default FeatureMap 
