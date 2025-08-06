@@ -13,6 +13,8 @@ import LoadingSpinner from './components/LoadingSpinner'
 import ViewControls from './components/ViewControls'
 import StatusBar from './components/StatusBar'
 import QuickActions from './components/QuickActions'
+import SettingsModal from './components/SettingsModal'
+import WelcomeScreen from './components/WelcomeScreen'
 
 function App() {
   const [nodes, setNodes] = useState([])
@@ -25,6 +27,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [showMinimap, setShowMinimap] = useState(true)
   const [showGrid, setShowGrid] = useState(true)
+  const [showSettings, setShowSettings] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(true)
+  const [currentTheme, setCurrentTheme] = useState('light')
   const reactFlowRef = useRef(null)
 
   const handleAddNode = (nodeType) => {
@@ -167,6 +172,34 @@ function App() {
     }
   }
 
+  const handleThemeChange = (theme) => {
+    setCurrentTheme(theme)
+    showNotification('success', `Theme changed to ${theme}!`)
+  }
+
+  const handleResetSettings = () => {
+    setCurrentTheme('light')
+    setShowMinimap(true)
+    setShowGrid(true)
+    showNotification('success', 'Settings reset to defaults!')
+  }
+
+  const handleStartBlank = () => {
+    setShowWelcome(false)
+    showNotification('info', 'Welcome! Start by adding some nodes.')
+  }
+
+  const handleWelcomeTemplate = () => {
+    setShowWelcome(false)
+    setShowTemplates(true)
+  }
+
+  const handleWelcomeImport = () => {
+    setShowWelcome(false)
+    // Trigger file input
+    document.querySelector('input[type="file"]')?.click()
+  }
+
   return (
     <div className="h-screen bg-secondary-50 flex flex-col">
       {/* Header */}
@@ -213,6 +246,14 @@ function App() {
             >
               <HelpCircle className="h-4 w-4" />
               <span>Help</span>
+            </button>
+            
+            <button 
+              onClick={() => setShowSettings(true)}
+              className="btn-secondary flex items-center space-x-2"
+            >
+              <Settings className="h-4 w-4" />
+              <span>Settings</span>
             </button>
           </div>
         </div>
@@ -308,6 +349,24 @@ function App() {
             <LoadingSpinner size="lg" text="Processing..." />
           </div>
         </div>
+      )}
+
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        currentTheme={currentTheme}
+        onThemeChange={handleThemeChange}
+        onResetSettings={handleResetSettings}
+      />
+
+      {/* Welcome Screen */}
+      {showWelcome && (
+        <WelcomeScreen
+          onStartBlank={handleStartBlank}
+          onLoadTemplate={handleWelcomeTemplate}
+          onImportFile={handleWelcomeImport}
+        />
       )}
     </div>
   )
