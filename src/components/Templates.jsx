@@ -9,11 +9,11 @@ const Templates = ({ onLoadTemplate }) => {
       description: 'Basic web application structure with frontend, backend, and database',
       icon: Globe,
       nodes: [
-        { id: 'frontend', type: 'feature', position: { x: 100, y: 100 }, data: { label: 'Frontend UI', description: 'React/Vue/Angular frontend', status: 'active', priority: 'high' } },
-        { id: 'backend', type: 'system', position: { x: 400, y: 100 }, data: { label: 'Backend API', description: 'Node.js/Python backend', status: 'active', priority: 'high' } },
-        { id: 'database', type: 'database', position: { x: 700, y: 100 }, data: { label: 'Database', description: 'PostgreSQL/MongoDB', status: 'active', priority: 'high' } },
-        { id: 'auth', type: 'security', position: { x: 250, y: 300 }, data: { label: 'Authentication', description: 'User login and registration', status: 'pending', priority: 'high' } },
-        { id: 'deployment', type: 'system', position: { x: 550, y: 300 }, data: { label: 'Deployment', description: 'Docker and CI/CD', status: 'pending', priority: 'medium' } }
+        { id: 'frontend', type: 'custom', position: { x: 100, y: 100 }, data: { label: 'Frontend UI', description: 'React/Vue/Angular frontend', status: 'active', priority: 'high', type: 'feature' } },
+        { id: 'backend', type: 'custom', position: { x: 400, y: 100 }, data: { label: 'Backend API', description: 'Node.js/Python backend', status: 'active', priority: 'high', type: 'system' } },
+        { id: 'database', type: 'custom', position: { x: 700, y: 100 }, data: { label: 'Database', description: 'PostgreSQL/MongoDB', status: 'active', priority: 'high', type: 'database' } },
+        { id: 'auth', type: 'custom', position: { x: 250, y: 300 }, data: { label: 'Authentication', description: 'User login and registration', status: 'pending', priority: 'high', type: 'security' } },
+        { id: 'deployment', type: 'custom', position: { x: 550, y: 300 }, data: { label: 'Deployment', description: 'Docker and CI/CD', status: 'pending', priority: 'medium', type: 'system' } }
       ],
       edges: [
         { id: 'e1', source: 'frontend', target: 'backend' },
@@ -29,13 +29,13 @@ const Templates = ({ onLoadTemplate }) => {
       description: 'Complete e-commerce system with products, orders, and payments',
       icon: Zap,
       nodes: [
-        { id: 'catalog', type: 'feature', position: { x: 100, y: 100 }, data: { label: 'Product Catalog', description: 'Product listing and search', status: 'active', priority: 'high' } },
-        { id: 'cart', type: 'feature', position: { x: 350, y: 100 }, data: { label: 'Shopping Cart', description: 'Add/remove items', status: 'active', priority: 'high' } },
-        { id: 'checkout', type: 'feature', position: { x: 600, y: 100 }, data: { label: 'Checkout', description: 'Payment processing', status: 'pending', priority: 'high' } },
-        { id: 'orders', type: 'system', position: { x: 850, y: 100 }, data: { label: 'Order Management', description: 'Track and manage orders', status: 'pending', priority: 'medium' } },
-        { id: 'inventory', type: 'database', position: { x: 250, y: 300 }, data: { label: 'Inventory DB', description: 'Product stock management', status: 'active', priority: 'high' } },
-        { id: 'payments', type: 'api', position: { x: 500, y: 300 }, data: { label: 'Payment Gateway', description: 'Stripe/PayPal integration', status: 'pending', priority: 'high' } },
-        { id: 'security', type: 'security', position: { x: 750, y: 300 }, data: { label: 'Security', description: 'SSL, fraud detection', status: 'active', priority: 'critical' } }
+        { id: 'catalog', type: 'custom', position: { x: 100, y: 100 }, data: { label: 'Product Catalog', description: 'Product listing and search', status: 'active', priority: 'high', type: 'feature' } },
+        { id: 'cart', type: 'custom', position: { x: 350, y: 100 }, data: { label: 'Shopping Cart', description: 'Add/remove items', status: 'active', priority: 'high', type: 'feature' } },
+        { id: 'checkout', type: 'custom', position: { x: 600, y: 100 }, data: { label: 'Checkout', description: 'Payment processing', status: 'pending', priority: 'high', type: 'feature' } },
+        { id: 'orders', type: 'custom', position: { x: 850, y: 100 }, data: { label: 'Order Management', description: 'Track and manage orders', status: 'pending', priority: 'medium', type: 'system' } },
+        { id: 'inventory', type: 'custom', position: { x: 250, y: 300 }, data: { label: 'Inventory DB', description: 'Product stock management', status: 'active', priority: 'high', type: 'database' } },
+        { id: 'payments', type: 'custom', position: { x: 500, y: 300 }, data: { label: 'Payment Gateway', description: 'Stripe/PayPal integration', status: 'pending', priority: 'high', type: 'api' } },
+        { id: 'security', type: 'custom', position: { x: 750, y: 300 }, data: { label: 'Security', description: 'SSL, fraud detection', status: 'active', priority: 'critical', type: 'security' } }
       ],
       edges: [
         { id: 'e1', source: 'catalog', target: 'cart' },
@@ -52,12 +52,12 @@ const Templates = ({ onLoadTemplate }) => {
       description: 'Mobile app with offline support and push notifications',
       icon: Zap,
       nodes: [
-        { id: 'mobile-ui', type: 'feature', position: { x: 100, y: 100 }, data: { label: 'Mobile UI', description: 'React Native/Flutter', status: 'active', priority: 'high' } },
-        { id: 'api', type: 'api', position: { x: 400, y: 100 }, data: { label: 'REST API', description: 'Backend API endpoints', status: 'active', priority: 'high' } },
-        { id: 'database', type: 'database', position: { x: 700, y: 100 }, data: { label: 'Database', description: 'User data and content', status: 'active', priority: 'high' } },
-        { id: 'offline', type: 'feature', position: { x: 250, y: 300 }, data: { label: 'Offline Support', description: 'Local storage and sync', status: 'pending', priority: 'medium' } },
-        { id: 'notifications', type: 'feature', position: { x: 500, y: 300 }, data: { label: 'Push Notifications', description: 'Firebase/APNS', status: 'pending', priority: 'medium' } },
-        { id: 'analytics', type: 'system', position: { x: 750, y: 300 }, data: { label: 'Analytics', description: 'User behavior tracking', status: 'pending', priority: 'low' } }
+        { id: 'mobile-ui', type: 'custom', position: { x: 100, y: 100 }, data: { label: 'Mobile UI', description: 'React Native/Flutter', status: 'active', priority: 'high', type: 'feature' } },
+        { id: 'api', type: 'custom', position: { x: 400, y: 100 }, data: { label: 'REST API', description: 'Backend API endpoints', status: 'active', priority: 'high', type: 'api' } },
+        { id: 'database', type: 'custom', position: { x: 700, y: 100 }, data: { label: 'Database', description: 'User data and content', status: 'active', priority: 'high', type: 'database' } },
+        { id: 'offline', type: 'custom', position: { x: 250, y: 300 }, data: { label: 'Offline Support', description: 'Local storage and sync', status: 'pending', priority: 'medium', type: 'feature' } },
+        { id: 'notifications', type: 'custom', position: { x: 500, y: 300 }, data: { label: 'Push Notifications', description: 'Firebase/APNS', status: 'pending', priority: 'medium', type: 'feature' } },
+        { id: 'analytics', type: 'custom', position: { x: 750, y: 300 }, data: { label: 'Analytics', description: 'User behavior tracking', status: 'pending', priority: 'low', type: 'system' } }
       ],
       edges: [
         { id: 'e1', source: 'mobile-ui', target: 'api' },
@@ -73,13 +73,13 @@ const Templates = ({ onLoadTemplate }) => {
       description: 'Bug tracking and issue management workflow',
       icon: Bug,
       nodes: [
-        { id: 'bug-report', type: 'bug', position: { x: 100, y: 100 }, data: { label: 'Bug Report', description: 'User reports a bug', status: 'active', priority: 'high' } },
-        { id: 'triage', type: 'system', position: { x: 350, y: 100 }, data: { label: 'Triage', description: 'Review and categorize', status: 'active', priority: 'medium' } },
-        { id: 'investigation', type: 'bug', position: { x: 600, y: 100 }, data: { label: 'Investigation', description: 'Developer investigates', status: 'pending', priority: 'high' } },
-        { id: 'fix', type: 'feature', position: { x: 850, y: 100 }, data: { label: 'Fix Implementation', description: 'Code the fix', status: 'pending', priority: 'high' } },
-        { id: 'testing', type: 'system', position: { x: 250, y: 300 }, data: { label: 'Testing', description: 'QA testing', status: 'pending', priority: 'medium' } },
-        { id: 'deployment', type: 'system', position: { x: 500, y: 300 }, data: { label: 'Deployment', description: 'Deploy to production', status: 'pending', priority: 'high' } },
-        { id: 'verification', type: 'bug', position: { x: 750, y: 300 }, data: { label: 'Verification', description: 'Verify fix works', status: 'pending', priority: 'medium' } }
+        { id: 'bug-report', type: 'custom', position: { x: 100, y: 100 }, data: { label: 'Bug Report', description: 'User reports a bug', status: 'active', priority: 'high', type: 'bug' } },
+        { id: 'triage', type: 'custom', position: { x: 350, y: 100 }, data: { label: 'Triage', description: 'Review and categorize', status: 'active', priority: 'medium', type: 'system' } },
+        { id: 'investigation', type: 'custom', position: { x: 600, y: 100 }, data: { label: 'Investigation', description: 'Developer investigates', status: 'pending', priority: 'high', type: 'bug' } },
+        { id: 'fix', type: 'custom', position: { x: 850, y: 100 }, data: { label: 'Fix Implementation', description: 'Code the fix', status: 'pending', priority: 'high', type: 'feature' } },
+        { id: 'testing', type: 'custom', position: { x: 250, y: 300 }, data: { label: 'Testing', description: 'QA testing', status: 'pending', priority: 'medium', type: 'system' } },
+        { id: 'deployment', type: 'custom', position: { x: 500, y: 300 }, data: { label: 'Deployment', description: 'Deploy to production', status: 'pending', priority: 'high', type: 'system' } },
+        { id: 'verification', type: 'custom', position: { x: 750, y: 300 }, data: { label: 'Verification', description: 'Verify fix works', status: 'pending', priority: 'medium', type: 'bug' } }
       ],
       edges: [
         { id: 'e1', source: 'bug-report', target: 'triage' },

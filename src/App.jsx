@@ -24,13 +24,14 @@ function App() {
   const handleAddNode = (nodeType) => {
     const newNode = {
       id: `node-${Date.now()}`,
-      type: nodeType,
+      type: 'custom',
       position: { x: 100, y: 100 },
       data: { 
         label: `New ${nodeType}`,
         description: '',
         status: 'active',
-        priority: 'medium'
+        priority: 'medium',
+        type: nodeType
       }
     }
     setNodes([...nodes, newNode])
@@ -212,8 +213,6 @@ function App() {
           </div>
         </div>
       )}
-    </div>
-      </div>
     </div>
   )
 }
