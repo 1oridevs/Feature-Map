@@ -25,4 +25,31 @@
   .card {
     @apply bg-white rounded-lg shadow-sm border border-secondary-200 p-6;
   }
+
+  /* Fix for ReactFlow container */
+  .react-flow__container {
+    @apply w-full h-full;
+  }
+
+  /* Smooth transitions for UI elements */
+  .ui-transition {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-secondary-100;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-secondary-300 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary-400;
+  }
 } 

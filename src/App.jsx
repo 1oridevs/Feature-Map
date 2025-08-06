@@ -1,17 +1,25 @@
 import React, { useState } from 'react'
-import { Map, Plus, Download, Upload, Settings, Layers, FileText } from 'lucide-react'
+import { Map, Plus, Download, Upload, Settings, Layers, FileText, HelpCircle } from 'lucide-react'
 import FeatureMap from './components/FeatureMap'
 import Sidebar from './components/Sidebar'
 import Toolbar from './components/Toolbar'
 import ImageExport from './components/ImageExport'
 import SearchFilter from './components/SearchFilter'
 import Templates from './components/Templates'
+import KeyboardShortcuts from './components/KeyboardShortcuts'
+import HelpModal from './components/HelpModal'
+import Notification from './components/Notification'
+import LoadingSpinner from './components/LoadingSpinner'
 
 function App() {
   const [nodes, setNodes] = useState([])
   const [edges, setEdges] = useState([])
   const [selectedNode, setSelectedNode] = useState(null)
   const [filteredNodes, setFilteredNodes] = useState([])
+  const [showHelp, setShowHelp] = useState(false)
+  const [showTemplates, setShowTemplates] = useState(false)
+  const [notification, setNotification] = useState({ isVisible: false, type: 'info', title: '', message: '' })
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleAddNode = (nodeType) => {
     const newNode = {
@@ -72,6 +80,27 @@ function App() {
     setSelectedNode(null)
   }
 
+  const handleDeleteNode = () => {
+    if (selectedNode) {
+      setNodes(nodes.filter(node => node.id !== selectedNode.id))
+      setEdges(edges.filter(edge => edge.source !== selectedNode.id && edge.target !== selectedNode.id))
+      setSelectedNode(null)
+    }
+  }
+
+  const handleSave = () => {
+    handleExport()
+    showNotification('success', 'Feature map saved successfully!')
+  }
+
+  const showNotification = (type, message, title = '') => {
+    setNotification({ isVisible: true, type, title, message })
+  }
+
+  const hideNotification = () => {
+    setNotification({ isVisible: false, type: 'info', title: '', message: '' })
+  }
+
   return (
     <div className="h-screen bg-secondary-50 flex flex-col">
       {/* Header */}
@@ -104,9 +133,20 @@ function App() {
               />
             </label>
             
-            <button className="btn-primary flex items-center space-x-2">
+            <button 
+              onClick={() => setShowTemplates(!showTemplates)}
+              className="btn-primary flex items-center space-x-2"
+            >
               <FileText className="h-4 w-4" />
               <span>Templates</span>
+            </button>
+            
+            <button 
+              onClick={() => setShowHelp(true)}
+              className="btn-secondary flex items-center space-x-2"
+            >
+              <HelpCircle className="h-4 w-4" />
+              <span>Help</span>
             </button>
           </div>
         </div>
@@ -121,11 +161,16 @@ function App() {
         />
         
         {/* Main Canvas */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
           <Toolbar onAddNode={handleAddNode} />
-          <Templates onLoadTemplate={handleLoadTemplate} />
+          
+          {showTemplates && (
+            <Templates onLoadTemplate={handleLoadTemplate} />
+          )}
+          
           <SearchFilter nodes={nodes} onFilterChange={setFilteredNodes} />
-          <div className="flex-1 bg-white">
+          
+          <div className="flex-1 bg-white min-h-0">
             <FeatureMap
               nodes={filteredNodes.length > 0 ? filteredNodes : nodes}
               edges={edges}
@@ -135,6 +180,39 @@ function App() {
             />
           </div>
         </div>
+      </div>
+
+      {/* Keyboard Shortcuts */}
+      <KeyboardShortcuts
+        onAddNode={handleAddNode}
+        onDeleteNode={handleDeleteNode}
+        onSave={handleSave}
+      />
+
+      {/* Help Modal */}
+      <HelpModal
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+      />
+
+      {/* Notification */}
+      <Notification
+        type={notification.type}
+        title={notification.title}
+        message={notification.message}
+        isVisible={notification.isVisible}
+        onClose={hideNotification}
+      />
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8">
+            <LoadingSpinner size="lg" text="Processing..." />
+          </div>
+        </div>
+      )}
+    </div>
       </div>
     </div>
   )
