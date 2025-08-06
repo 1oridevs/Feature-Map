@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
-import { Map, Plus, Download, Upload, Settings, Layers } from 'lucide-react'
+import { Map, Plus, Download, Upload, Settings, Layers, FileText } from 'lucide-react'
 import FeatureMap from './components/FeatureMap'
 import Sidebar from './components/Sidebar'
 import Toolbar from './components/Toolbar'
+import ImageExport from './components/ImageExport'
+import SearchFilter from './components/SearchFilter'
+import Templates from './components/Templates'
 
 function App() {
   const [nodes, setNodes] = useState([])
   const [edges, setEdges] = useState([])
   const [selectedNode, setSelectedNode] = useState(null)
+  const [filteredNodes, setFilteredNodes] = useState([])
 
   const handleAddNode = (nodeType) => {
     const newNode = {
@@ -62,6 +66,12 @@ function App() {
     }
   }
 
+  const handleLoadTemplate = (templateNodes, templateEdges) => {
+    setNodes(templateNodes)
+    setEdges(templateEdges)
+    setSelectedNode(null)
+  }
+
   return (
     <div className="h-screen bg-secondary-50 flex flex-col">
       {/* Header */}
@@ -73,12 +83,14 @@ function App() {
           </div>
           
           <div className="flex items-center space-x-4">
+            <ImageExport nodes={nodes} edges={edges} />
+            
             <button
               onClick={handleExport}
               className="btn-secondary flex items-center space-x-2"
             >
               <Download className="h-4 w-4" />
-              <span>Export</span>
+              <span>JSON</span>
             </button>
             
             <label className="btn-secondary flex items-center space-x-2 cursor-pointer">
@@ -93,8 +105,8 @@ function App() {
             </label>
             
             <button className="btn-primary flex items-center space-x-2">
-              <Settings className="h-4 w-4" />
-              <span>Settings</span>
+              <FileText className="h-4 w-4" />
+              <span>Templates</span>
             </button>
           </div>
         </div>
@@ -111,9 +123,11 @@ function App() {
         {/* Main Canvas */}
         <div className="flex-1 flex flex-col">
           <Toolbar onAddNode={handleAddNode} />
+          <Templates onLoadTemplate={handleLoadTemplate} />
+          <SearchFilter nodes={nodes} onFilterChange={setFilteredNodes} />
           <div className="flex-1 bg-white">
             <FeatureMap
-              nodes={nodes}
+              nodes={filteredNodes.length > 0 ? filteredNodes : nodes}
               edges={edges}
               onNodesChange={setNodes}
               onEdgesChange={setEdges}
