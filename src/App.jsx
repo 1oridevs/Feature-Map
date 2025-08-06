@@ -45,7 +45,8 @@ function App() {
         type: nodeType
       }
     }
-    setNodes([...nodes, newNode])
+    setNodes(prevNodes => [...prevNodes, newNode])
+    showNotification('success', `${nodeType} node added successfully!`)
   }
 
   const handleNodeSelect = (node) => {
@@ -54,11 +55,12 @@ function App() {
 
   const handleNodeUpdate = (nodeId, updates, duplicatedNode = null) => {
     if (duplicatedNode) {
-      setNodes([...nodes, duplicatedNode])
+      setNodes(prevNodes => [...prevNodes, duplicatedNode])
+      showNotification('success', 'Node duplicated successfully!')
       return
     }
     
-    setNodes(nodes.map(node => 
+    setNodes(prevNodes => prevNodes.map(node => 
       node.id === nodeId ? { ...node, data: { ...node.data, ...updates } } : node
     ))
   }
@@ -95,13 +97,17 @@ function App() {
     setNodes(templateNodes)
     setEdges(templateEdges)
     setSelectedNode(null)
+    showNotification('success', 'Template loaded successfully!')
   }
 
-  const handleDeleteNode = () => {
-    if (selectedNode) {
-      setNodes(nodes.filter(node => node.id !== selectedNode.id))
-      setEdges(edges.filter(edge => edge.source !== selectedNode.id && edge.target !== selectedNode.id))
+  const handleDeleteNode = (nodeId = null) => {
+    const nodeToDelete = nodeId || (selectedNode ? selectedNode.id : null)
+    if (nodeToDelete) {
+      // Use functional updates to ensure state consistency
+      setNodes(prevNodes => prevNodes.filter(node => node.id !== nodeToDelete))
+      setEdges(prevEdges => prevEdges.filter(edge => edge.source !== nodeToDelete && edge.target !== nodeToDelete))
       setSelectedNode(null)
+      showNotification('success', 'Node deleted successfully!')
     }
   }
 
@@ -134,26 +140,24 @@ function App() {
 
   const handleAutoLayout = () => {
     // Simple auto-layout algorithm
-    const newNodes = nodes.map((node, index) => ({
+    setNodes(prevNodes => prevNodes.map((node, index) => ({
       ...node,
       position: {
         x: (index % 3) * 300 + 100,
         y: Math.floor(index / 3) * 200 + 100
       }
-    }))
-    setNodes(newNodes)
+    })))
     showNotification('success', 'Nodes auto-arranged!')
   }
 
   const handleShuffleLayout = () => {
-    const newNodes = nodes.map(node => ({
+    setNodes(prevNodes => prevNodes.map(node => ({
       ...node,
       position: {
         x: Math.random() * 800 + 100,
         y: Math.random() * 600 + 100
       }
-    }))
-    setNodes(newNodes)
+    })))
     showNotification('success', 'Node positions randomized!')
   }
 
